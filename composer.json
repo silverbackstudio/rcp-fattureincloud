@@ -1,0 +1,17 @@
+{
+    "name": "silverbackstudio/svbk-rcp-fattureincloud",
+    "description": "Plugin integration for FattureInCloud",
+    "type": "wordpress-plugin",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Brando Meniconi",
+            "email": "b.meniconi@silverbackstudio.it"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require-dev": {
+        "wimg/php-compatibility": "^7.1",
+        "squizlabs/php_codesniffer": "^2.0"
+    }
+}
