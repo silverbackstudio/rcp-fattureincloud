@@ -39,10 +39,6 @@ function svbk_rcp_fattureincloud_client() {
 
 	$client = new FattureInCloud\Client( env( 'FATTUREINCLOUD_API_UID' ) ,env( 'FATTUREINCLOUD_API_KEY' ) );
 
-	$log = new Logger( 'fattureincloud' );
-	$log->pushHandler( new StreamHandler( WP_CONTENT_DIR . '/fattureincloud.log', Logger::INFO ) );
-	$client->setLogger( $log );
-
 	return $client;
 }
 
