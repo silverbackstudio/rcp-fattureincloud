@@ -149,6 +149,8 @@ function svbk_rcp_generate_invoice( $payment_id ) {
 			'indirizzo_cap' => $rcp_member->billing_postal_code,
 			'indirizzo_citta' => $rcp_member->biling_city,
 			'indirizzo_provincia' => $rcp_member->billing_state,
+			'piva' => $rcp_member->tax_id,
+			'cf' => $rcp_member->tax_code,
 			'paese' => $rcp_member->billing_country,
 			'lista_articoli' => array( $invoiceArticle ),
 			'lista_pagamenti' => array( $invoicePayment ),
