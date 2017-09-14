@@ -75,10 +75,6 @@ function svbk_rcp_trigger_invoice_download() {
 		return;
 	}
 
-	if ( ! wp_verify_nonce( $_GET['_wpnonce'], 'rcp_download_invoice_nonce' ) ) {
-		return;
-	}
-
 	$payment_id = absint( $_GET['payment_id'] );
 
 	if ( empty( $payment_id ) ) {
@@ -190,7 +186,7 @@ function svbk_rcp_generate_invoice( $payment_id ) {
 
 }
 
-add_action( 'rcp_insert_payment', 'svbk_rcp_generate_invoice', 10, 3 );
+add_action( 'rcp_create_payment', 'svbk_rcp_generate_invoice', 10, 3 );
 
 
 function svbk_rcp_fattureincloud_settings( $rcp_options ) {
