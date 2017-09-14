@@ -159,11 +159,14 @@ function svbk_rcp_generate_invoice( $payment_id ) {
 
 		$result = $invoiceService->createDoc( FattureInCloud\Client::TYPE_FATTURA, $newInvoice );
 
-		if ( $result ) {
+		if ( $result && ! $result->error ) {
 			$id_fattura = $result->new_id;
 			$payments_db->add_meta( $payment_id, 'fattureincloud_invoice_id', $id_fattura, true );
+			rcp_log( sprintf( '[FattureInCloud] Invoice #%d created for payment #%d.', $id_fattura, $payment_id ) );	
+		} else {
+			rcp_log( sprintf( '[FattureInCloud] Can\'t create invoice for payment #%d. Error: %s',  $payment_id, isset($result->error) ? $result->error : '' ) );	
 		}
-	}// End if().
+	}
 
 	$url_fattura = $payments_db->get_meta( $payment_id, 'fattureincloud_invoice_url', true );
 
