@@ -186,7 +186,7 @@ function svbk_rcp_generate_invoice( $payment_id ) {
 
 }
 
-add_action( 'rcp_create_payment', 'svbk_rcp_generate_invoice', 10, 3 );
+add_action( 'rcp_update_payment_status_complete', 'svbk_rcp_generate_invoice', 10, 3 );
 
 
 function svbk_rcp_fattureincloud_settings( $rcp_options ) {
