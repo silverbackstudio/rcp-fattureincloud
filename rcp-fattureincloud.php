@@ -81,28 +81,46 @@ function svbk_rcp_trigger_invoice_download() {
 		return;
 	}
 
+	if ( ! is_user_logged_in() ) {
+		wp_die( sprintf(__( 'You must be logged in to download your invoice, please <a href="%s">login</a> to your account.', 'svbk-rcp-fattureincloud' ), rcp_get_login_url( rcp_get_invoice_url( $payment_id ) ) ) );
+	}
+
 	$payments_db  = new RCP_Payments;
 	$payment      = $payments_db->get_payment( $payment_id );
 
-	if ( ! $payment ) {
-		wp_die( esc_html__( 'This payment record does not exist', 'rcp' ) );
+	if ( empty( $payment->user_id ) ) {
+		wp_die( esc_html__( 'This payment record does not exist', 'svbk-rcp-fattureincloud' ) );
 	}
 
 	if ( get_current_user_id() != $payment->user_id && ! current_user_can( 'rcp_manage_payments' ) ) {
-		wp_die( esc_html__( 'You do not have permission to download this invoice', 'rcp' ) );
+		wp_die( esc_html__( 'You do not have permission to download this invoice.', 'svbk-rcp-fattureincloud' ) );
 	}
 
 	$rcp_payment = $payment;
 	$rcp_member = new RCP_Member( $payment->user_id );
 
-	$invoice_url = $payments_db->get_meta( $payment_id, 'fattureincloud_invoice_url', true );
+	$invoice_id = $payments_db->get_meta( $payment_id, 'fattureincloud_invoice_id', true );
 
-	if ( ! $invoice_url ) {
+	if ( ! $invoice_id ) {
 		wp_die( esc_html__( 'Invoice not yet available, please contact and administrative to get more info', 'svbk-rcp-fattureincloud' ) );
 	}
 
-	wp_redirect( $invoice_url );
-	die();
+	$dettagliRequest = new FattureInCloud\Struct\DocDettagliRequest(
+		array(
+			'id' => $invoice_id,
+		)
+	);
+	
+	$invoiceService = svbk_rcp_fattureincloud_client();
+	$result = $invoiceService->getDettagliDoc( FattureInCloud\Client::TYPE_FATTURA, $dettagliRequest );
+
+	if ( $result ) {
+		$invoice_url = $result->dettagli_documento->link_doc;
+		wp_redirect( $invoice_url );
+		die();
+	}
+
+	wp_die( esc_html__( 'Invoice service not available, please try later or contact business owner', 'svbk-rcp-fattureincloud' ) );
 
 }
 add_action( 'init', 'svbk_rcp_trigger_invoice_download', 9 );
@@ -162,24 +180,7 @@ function svbk_rcp_generate_invoice( $payment_id ) {
 		} else {
 			rcp_log( sprintf( '[FattureInCloud] Can\'t create invoice for payment #%d. Error: %s',  $payment_id, isset($result->error) ? $result->error : '' ) );	
 		}
-	}
 
-	$url_fattura = $payments_db->get_meta( $payment_id, 'fattureincloud_invoice_url', true );
-
-	if ( $id_fattura && ! $url_fattura ) {
-
-		$dettagliRequest = new FattureInCloud\Struct\DocDettagliRequest(
-			array(
-				'id' => $id_fattura,
-			)
-		);
-
-		$result = $invoiceService->getDettagliDoc( FattureInCloud\Client::TYPE_FATTURA, $dettagliRequest );
-
-		if ( $result ) {
-			$url_fattura = $result->dettagli_documento->link_doc;
-			$payments_db->add_meta( $payment_id, 'fattureincloud_invoice_url', $url_fattura, true );
-		}
 	}
 
 	return $url_fattura;
@@ -224,3 +225,55 @@ function svbk_rcp_fattureincloud_settings( $rcp_options ) {
 <?php }
 
 add_action( 'rcp_invoice_settings', 'svbk_rcp_fattureincloud_settings' );
+
+
+function svbk_rcp_fattureincloud_payment_fields( $payment_id ) {
+	global $rcp_payments_db;
+	?>
+	<tr valign="top">
+		<th scope="row" valign="top">
+			<label for="rcp-fattureincloud_invoice_id"><?php _e( 'FattureinCloud Invoice ID', 'svbk-rcp-fattureincloud' ); ?></label>
+		</th>
+		<td>
+			<input name="fattureincloud_invoice_id" id="rcp-fattureincloud_invoice_id" type="text"  value="<?php echo esc_attr( $rcp_payments_db->get_meta( $payment_id, 'fattureincloud_invoice_id', true ) ); ?>"/>
+			<p class="description"><?php _e( 'The FattureInCloud global document ID. Example: https://secure.fattureincloud.it/invoices-view-<b>12459626<b>', 'svbk-rcp-fattureincloud' ); ?></p>
+		</td>
+	</tr>
+	<?php
+}
+
+add_action( 'rcp_edit_payment_after', 'svbk_rcp_fattureincloud_payment_fields' ); 
+
+
+/**
+ * Edit an existing payment
+ *
+ * @since 2.9
+ * @return void
+ */
+function svbk_rcp_fattureincloud_process_edit_payment( $payment ) {
+
+	global $rcp_payments_db;
+
+	if ( ! wp_verify_nonce( $_POST['rcp_edit_payment_nonce'], 'rcp_edit_payment_nonce' ) ) {
+		return;
+	}
+
+	if ( ! current_user_can( 'rcp_manage_payments' ) ) {
+		return;
+	}
+
+	if ( !isset( $_POST['payment-id'] ) || !isset($_POST['fattureincloud_invoice_id']) ) {
+		return;
+	}
+	
+	$payment_id   = absint( $_POST['payment-id'] );
+
+	if( !empty( $_POST['fattureincloud_invoice_id'] ) ) {
+		$rcp_payments_db->add_meta( $payment_id, 'fattureincloud_invoice_id', intval( $_POST['fattureincloud_invoice_id'] ), true );
+	} else {
+		$rcp_payments_db->delete_meta( $payment_id, 'fattureincloud_invoice_id' );
+	}
+	
+}
+add_action( 'rcp_action_edit-payment', 'svbk_rcp_fattureincloud_process_edit_payment', 9 );

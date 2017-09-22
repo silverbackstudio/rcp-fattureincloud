@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Restrict Content Pro - Fatture In Cloud\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-08 14:38+0000\n"
-"PO-Revision-Date: 2017-08-08 14:40+0000\n"
+"POT-Creation-Date: 2017-09-22 14:00+0000\n"
+"PO-Revision-Date: 2017-09-22 14:03+0000\n"
 "Last-Translator: silverbackstudio <webmaster@silverbackstudio.it>\n"
 "Language-Team: Italian\n"
 "Language: it-IT\n"
@@ -13,38 +13,76 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
-#: rcp-fattureincloud.php:109
+#: rcp-fattureincloud.php:96
+msgid "You do not have permission to download this invoice."
+msgstr ""
+"Non hai il permesso di scaricare questa fattura, per favore utilizza la "
+"pagina pagamenti per scaricare le tue fatture."
+
+#: rcp-fattureincloud.php:123
+msgid ""
+"Invoice service not available, please try later or contact business owner"
+msgstr ""
+"Il servizio di fatturazione non è raggiungibile al momento, per favore "
+"riprovare più tardi."
+
+#: rcp-fattureincloud.php:235
+msgid "FattureinCloud Invoice ID"
+msgstr "ID FattureInCloud"
+
+#: rcp-fattureincloud.php:239
+msgid ""
+"The FattureInCloud global document ID. Example: https://secure."
+"fattureincloud.it/invoices-view-<b>12459626<b>"
+msgstr ""
+"Il codice documento di FattureInCloud per questo pagamento. Esempio: https:"
+"//secure.fattureincloud.it/invoices-view-<b>12459626<b>"
+
+#: rcp-fattureincloud.php:85
+#, php-format
+msgid ""
+"You must be logged in to download your invoice, please <a href=\"%s\">"
+"login</a> to your account."
+msgstr ""
+"Devi aver eseguito l'accesso per scaricare le tua fattura. Per favore<a "
+"href=\"%s\">accedi</a> alla tua area riservata."
+
+#: rcp-fattureincloud.php:92
+msgid "This payment record does not exist"
+msgstr "Questo pagamento non esiste."
+
+#: rcp-fattureincloud.php:105
 msgid ""
 "Invoice not yet available, please contact and administrative to get more info"
 msgstr ""
 "La fattura non é ancora disponibile, prego contattare l'amministrazione per "
 "maggiori informazioni"
 
-#: rcp-fattureincloud.php:197
+#: rcp-fattureincloud.php:195
 msgid "FattureInCloud"
 msgstr "FattureInCloud"
 
-#: rcp-fattureincloud.php:201
+#: rcp-fattureincloud.php:199
 msgid "API UID"
 msgstr "API UID"
 
-#: rcp-fattureincloud.php:205
+#: rcp-fattureincloud.php:203
 msgid "Enter the FattureInCloud API UID."
 msgstr "Inserisci la API UID di FattureInCloud"
 
-#: rcp-fattureincloud.php:210
+#: rcp-fattureincloud.php:208
 msgid "API KEY"
 msgstr "API KEY"
 
-#: rcp-fattureincloud.php:214
+#: rcp-fattureincloud.php:212
 msgid "Enter the FattureInCloud API KEY."
 msgstr "Inserisci la API KEY di FattureInCloud "
 
-#: rcp-fattureincloud.php:219
+#: rcp-fattureincloud.php:217
 msgid "Wallet"
 msgstr "Conto Pagamenti"
 
-#: rcp-fattureincloud.php:223
+#: rcp-fattureincloud.php:221
 msgid "Enter the FattureInCloud default wallet"
 msgstr "Inserisci il conto pagamenti predefinito di FattureInCloud"
 
