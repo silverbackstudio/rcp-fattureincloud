@@ -227,7 +227,7 @@ function svbk_rcp_fattureincloud_settings( $rcp_options ) {
 add_action( 'rcp_invoice_settings', 'svbk_rcp_fattureincloud_settings' );
 
 
-function svbk_rcp_fattureincloud_payment_fields( $payment_id ) {
+function svbk_rcp_fattureincloud_payment_fields( $payment ) {
 	global $rcp_payments_db;
 	?>
 	<tr valign="top">
@@ -235,7 +235,7 @@ function svbk_rcp_fattureincloud_payment_fields( $payment_id ) {
 			<label for="rcp-fattureincloud_invoice_id"><?php _e( 'FattureinCloud Invoice ID', 'svbk-rcp-fattureincloud' ); ?></label>
 		</th>
 		<td>
-			<input name="fattureincloud_invoice_id" id="rcp-fattureincloud_invoice_id" type="text"  value="<?php echo esc_attr( $rcp_payments_db->get_meta( $payment_id, 'fattureincloud_invoice_id', true ) ); ?>"/>
+			<input name="fattureincloud_invoice_id" id="rcp-fattureincloud_invoice_id" type="text"  value="<?php echo esc_attr( $rcp_payments_db->get_meta( $payment->id, 'fattureincloud_invoice_id', true ) ); ?>"/>
 			<p class="description"><?php _e( 'The FattureInCloud global document ID. Example: https://secure.fattureincloud.it/invoices-view-<b>12459626<b>', 'svbk-rcp-fattureincloud' ); ?></p>
 		</td>
 	</tr>
@@ -251,7 +251,7 @@ add_action( 'rcp_edit_payment_after', 'svbk_rcp_fattureincloud_payment_fields' )
  * @since 2.9
  * @return void
  */
-function svbk_rcp_fattureincloud_process_edit_payment( $payment ) {
+function svbk_rcp_fattureincloud_process_edit_payment() {
 
 	global $rcp_payments_db;
 
