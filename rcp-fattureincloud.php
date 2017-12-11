@@ -51,7 +51,7 @@ function svbk_rcp_fattureincloud_countries( $countries ) {
 	if ( false === $countries ) {
 		$response = $client->getInfoList( array( 'lista_paesi' ) );
 
-		if ( $response->lista_paesi ) {
+		if ( ($response !== false) && isset($response->lista_paesi) && $response->lista_paesi ) {
 			$countries = $response->lista_paesi;
 			set_transient( $cache_key, $countries, 2 * DAY_IN_SECONDS );
 		}
