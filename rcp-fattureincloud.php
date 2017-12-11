@@ -51,7 +51,7 @@ function svbk_rcp_fattureincloud_countries( $countries ) {
 	if ( false === $countries ) {
 		$response = $client->getInfoList( array( 'lista_paesi' ) );
 
-		if ( ($response !== false) && isset($response->lista_paesi) && $response->lista_paesi ) {
+		if ( ($response !== false) && $response->success ) {
 			$countries = $response->lista_paesi;
 			set_transient( $cache_key, $countries, 2 * DAY_IN_SECONDS );
 		}
@@ -114,7 +114,7 @@ function svbk_rcp_trigger_invoice_download() {
 	$invoiceService = svbk_rcp_fattureincloud_client();
 	$result = $invoiceService->getDettagliDoc( FattureInCloud\Client::TYPE_FATTURA, $dettagliRequest );
 
-	if ( $result ) {
+	if ( $result && $result->success ) {
 		$invoice_url = $result->dettagli_documento->link_doc;
 		wp_redirect( $invoice_url );
 		die();
@@ -173,7 +173,7 @@ function svbk_rcp_generate_invoice( $payment_id ) {
 
 		$result = $invoiceService->createDoc( FattureInCloud\Client::TYPE_FATTURA, $newInvoice );
 
-		if ( $result && ! $result->error ) {
+		if ( $result && $result->success ) {
 			$id_fattura = $result->new_id;
 			$payments_db->add_meta( $payment_id, 'fattureincloud_invoice_id', $id_fattura, true );
 			rcp_log( sprintf( '[FattureInCloud] Invoice #%d created for payment #%d.', $id_fattura, $payment_id ) );	
